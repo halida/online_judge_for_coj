@@ -21,7 +21,7 @@ def process():
     for i in range(12):
         d = getfloats()[0]
         result += d
-    print "%.2f" % round(result/12.0, 2)
+    print "$%.2f" % round(result/12.0, 2)
 
 process()
 
