@@ -16,12 +16,12 @@ DIR_NAMES = 'RDLU'
 def process():
     cases = getints()[0]
     for i in range(cases):
-        M, N = getints()
+        N, M = getints()
         D = 3
-        if M > N:
-            t = 2 * N
+        if M >= N:
+            t = 2 * N - 1
         else:
-            t = 2 * M - 1
-        print DIR_NAMES[(D + t) % 3]
+            t = 2 * M
+        print DIR_NAMES[(D + t) % 4]
 
 process()
