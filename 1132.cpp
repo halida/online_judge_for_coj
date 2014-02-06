@@ -6,57 +6,49 @@
 
 #include <cmath>
 #include <algorithm>
-#include <vector>
 
 const int MAX_X = 5 * 100000;
 
-std::vector <int> sep[MAX_X+1];
-
+int sep[MAX_X+1];
 int res[MAX_X+1];
 
 void sepp(int v){
     int vt = v;
     int i = 1;
 
-    if (v > 1) sep[v].push_back(1);
+    if (v <= 1) { sep[v] = 0; return; }
+
+    sep[v] = 1;
+    int m = std::sqrt(vt);
 
     while (vt > 1){
         i++;
-        if (i > vt/2) break;
+        if (i > m) break;
 
         if (vt % i == 0) {
-            sep[v].push_back(i);
+            sep[v] = std::max(sep[v], i);
             vt /= i;
             i = 1;
 
-            if ( ! sep[vt].empty() ){
-                // std::vector<int> a=sep[v], b=sep[vt];
-                // a.insert(a.end(), b.begin(), b.end());
-                // sep[v] = a;
-                sep[v].insert(sep[v].end(), sep[vt].begin(), sep[vt].end());
-                sort(sep[v].begin(), sep[v].end());
+            if ( sep[vt] >= 0 ){
+                sep[v] = std::max(sep[v], sep[vt]);
                 return;
             }
         }
     }
-    if (vt != v) sep[v].push_back(vt);
-        
-    sort(sep[v].begin(), sep[v].end());
+
+    if (vt != v) sep[v] = std::max(sep[v], vt);
 }
 
 int solve(int v){
-    if (v <= 1) return 0;
     if (res[v] != -1) return res[v];
-    if (sep[v].empty()) sepp(v);
-
-    if (sep[v].size() <= 1) {
-        res[v] = 1;
-        return 1;
-    }
+    if (sep[v] < 0) sepp(v);
+    if (sep[v] == 1) {res[v] = 1; return 1; };
+    if (v <= 1) return 0;
 
     // printf("sep.size = %d\n", sep[v].size());
 
-    int last = sep[v][ sep[v].size()-1 ];
+    int last = sep[v];
     int last_count = 0;
 
     int pre = v;
@@ -66,16 +58,6 @@ int solve(int v){
         last_count ++;
     }
     
-    // for (int i = 0; i < sep[v].size()-1; ++i)
-    //     {
-    //         int c = sep[v][i];
-    //         if (c != last) {
-    //             pre *= c;
-    //         } else {
-    //             last_count ++;
-    //         }
-    //     }
-
     int pre_result = solve(pre);
     int result = 0;
 
@@ -104,14 +86,10 @@ int lazy_solve(int v){
 };
 
 void check_result(){
-    for (int i = 0; i < MAX_X/10; ++i)
+    for (int i = 0; i < MAX_X+1; ++i)
         {
             int result = solve(i);
-            // printf("sep %d size %d = ", i, static_cast<int>(sep[i].size()));
-            // for (int j = 0; j < sep[i].size(); ++j)
-            //     {
-            //         printf("%d ", sep[i][j]);
-            //     }
+            // printf("sep %d max %d", i, sep[i]);
             // printf(", solve: %d\n", result);
         }
 }
@@ -122,11 +100,12 @@ void pre_sep(){
     int m = std::sqrt(MAX_X);
     for (int i = 1; i <= m; ++i)
         {
-            if (sep[i].size() > 1) continue;
+            if (sep[i] > 1) continue;
             for (int j = 1; j <= MAX_X/i; ++j)
                 {
                     if (i == 1 && j == 1) continue;
-                    sep[i*j].push_back(i);
+                    int t = i*j;
+                    sep[t] = std::max(sep[t], i);
                 }
         }
     // find parameter count
@@ -135,10 +114,11 @@ void pre_sep(){
 int main(int argc, char *argv[])
 {
     std::fill(res, (res + MAX_X + 1), -1);
+    std::fill(sep, (sep + MAX_X + 1), -1);
 
     // pre_sep();
-    check_result();
-    return 0;
+    // check_result();
+    // return 0;
 
     int c = 0;
     scanf("%d", &c);
