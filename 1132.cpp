@@ -30,9 +30,10 @@ void sepp(int v){
             i = 1;
 
             if ( ! sep[vt].empty() ){
-                std::vector<int> a=sep[v], b=sep[vt];
-                a.insert(a.end(), b.begin(), b.end());
-                sep[v] = a;
+                // std::vector<int> a=sep[v], b=sep[vt];
+                // a.insert(a.end(), b.begin(), b.end());
+                // sep[v] = a;
+                sep[v].insert(sep[v].end(), sep[vt].begin(), sep[vt].end());
                 sort(sep[v].begin(), sep[v].end());
                 return;
             }
@@ -44,11 +45,15 @@ void sepp(int v){
 }
 
 int solve(int v){
+    if (v <= 1) return 0;
     if (res[v] != -1) return res[v];
-    if (sep[v].empty() && v > 1) sepp(v);
+    if (sep[v].empty()) sepp(v);
 
-    if (sep[v].size() <= 0) return 0;
-    if (sep[v].size() <= 1) return 1;
+    if (sep[v].size() <= 1) {
+        res[v] = 1;
+        return 1;
+    }
+
     // printf("sep.size = %d\n", sep[v].size());
 
     int last = sep[v][ sep[v].size()-1 ];
@@ -132,8 +137,8 @@ int main(int argc, char *argv[])
     std::fill(res, (res + MAX_X + 1), -1);
 
     // pre_sep();
-    // check_result();
-    // return 0;
+    check_result();
+    return 0;
 
     int c = 0;
     scanf("%d", &c);
