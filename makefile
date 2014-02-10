@@ -4,7 +4,7 @@ PROFILE= -pg -v
 ## -ftime-report
 # CFLAG+=$(PROFILE)
 
-SRC=1132.cpp
+SRC=1132_other.cpp
 
 run: bin
 	./bin
